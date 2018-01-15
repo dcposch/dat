@@ -12,7 +12,6 @@ function trackImport (state, bus) {
       state.importer.fileImport = null
       state.exiting = true
       bus.emit('render')
-      process.exit()
     })
     state.importer = xtend(
       {
