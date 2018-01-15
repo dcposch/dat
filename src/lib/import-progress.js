@@ -12,13 +12,17 @@ function trackImport (state, bus) {
       state.importer.fileImport = null
       state.exiting = true
       bus.emit('render')
+      process.exit()
     })
-    state.importer = xtend({
-      importedBytes: 0,
-      count: progress.count,
-      liveImports: [],
-      indexSpeed: progress.indexSpeed
-    }, progress)
+    state.importer = xtend(
+      {
+        importedBytes: 0,
+        count: progress.count,
+        liveImports: [],
+        indexSpeed: progress.indexSpeed
+      },
+      progress
+    )
     bus.emit('dat:importer')
 
     var counting = setInterval(function () {
@@ -34,11 +38,15 @@ function trackImport (state, bus) {
     })
 
     progress.on('del', function (src, dst) {
-      if (src.live) state.importer.liveImports.push({src: src, dst: dst, type: 'del'})
+      if (src.live) {
+        state.importer.liveImports.push({ src: src, dst: dst, type: 'del' })
+      }
     })
 
     progress.on('put', function (src, dst) {
-      if (src.live) state.importer.liveImports.push({src: src, dst: dst, type: 'put'})
+      if (src.live) {
+        state.importer.liveImports.push({ src: src, dst: dst, type: 'put' })
+      }
       if (src.stat.isDirectory()) return
       state.importer.fileImport = {
         src: src,

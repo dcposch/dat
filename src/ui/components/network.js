@@ -8,7 +8,7 @@ function networkUI (state) {
   var network = state.network
   var stats = state.stats
 
-  if (!network) return ''
+  if (!network || !stats) return ''
   var peers = stats.peers.total || 0
   // var complete = stats.peers.complete
   return output`

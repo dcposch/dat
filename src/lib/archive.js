@@ -2,7 +2,7 @@ var debug = require('debug')('dat')
 var path = require('path')
 var EventEmitter = require('events').EventEmitter
 var doImport = require('./import-progress')
-var stats = require('./stats')
+// var stats = require('./stats')
 var network = require('./network')
 var download = require('./download')
 var serve = require('./serve-http')
@@ -13,7 +13,8 @@ module.exports = function (state, bus) {
     state.writable = state.dat.writable
     state.joinNetwork = !(state.joinNetwork === false)
 
-    stats(state, bus)
+    // TODO: disable stats
+    // stats(state, bus)
     if (state.joinNetwork) network(state, bus)
     if (state.opts.http) serve(state, bus)
 
@@ -63,7 +64,7 @@ function selectiveSync (state, bus) {
     bus.emit('render')
     if (start === 0 && end === 0) return
     debug('downloading', entry, start, end)
-    archive.content.download({start, end}, function () {
+    archive.content.download({ start, end }, function () {
       debug('success', entry)
     })
   }
@@ -73,7 +74,10 @@ function selectiveSync (state, bus) {
 
   if (state.opts.empty) {
     archive.metadata.update(function () {
-      return bus.emit('exit:warn', `Dat successfully created in empty mode. Download files using pull or sync.`)
+      return bus.emit(
+        'exit:warn',
+        `Dat successfully created in empty mode. Download files using pull or sync.`
+      )
     })
   }
 
